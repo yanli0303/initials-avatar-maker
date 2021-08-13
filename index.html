@@ -94,28 +94,34 @@
             <strong>Style</strong>
           </legend>
           <div class="pure-g">
-            <div class="pure-u-1 pure-u-md-1-4">
+            <div class="pure-u-1 pure-u-md-1-3">
               <label>
                 Background Color
                 <input id="background" type="text" required pattern="^[0-9A-Fa-f]{6}$" placeholder="Background color (RGB)">
               </label>
             </div>
-            <div class="pure-u-1 pure-u-md-1-4">
+            <div class="pure-u-1 pure-u-md-1-3">
               <label>
                 Text Color
                 <input id="color" type="text" required pattern="^[0-9A-Fa-f]{6}$" placeholder="Text color (RGB)">
               </label>
             </div>
-            <div class="pure-u-1 pure-u-md-1-4">
+            <div class="pure-u-1 pure-u-md-1-3">
               <label>
                 Size
                 <input id="size" type="number" placeholder="Size (width and height)">
               </label>
             </div>
-            <div class="pure-u-1 pure-u-md-1-4">
+            <div class="pure-u-1 pure-u-md-1-3">
               <label>
                 Line Width
-                <input id="line-width" type="number" placeholder="Line width">
+                <input id="lineWidth" type="number" placeholder="Line width">
+              </label>
+            </div>
+            <div class="pure-u-1 pure-u-md-1-3">
+              <label>
+                Font Size
+                <input id="fontSize" type="number" placeholder="Font size">
               </label>
             </div>
           </div>
@@ -132,27 +138,29 @@
       const background = document.getElementById('background').value;
       const color = document.getElementById('color').value;
       const size = document.getElementById('size').value;
-      const lineWidth = document.getElementById('line-width').value;
+      const lineWidth = document.getElementById('lineWidth').value;
+      const fontSize = document.getElementById('fontSize').value;
 
       return {
         name,
         background: background,
         color: color,
         size: Math.floor(+size),
-        lineWidth: Math.floor(+lineWidth)
+        lineWidth: Math.floor(+lineWidth),
+        fontSize: Math.floor(+fontSize)
       };
     }
 
-    function paint({ name, background, color, size, lineWidth }) {
+    function paint({ name, background, color, size, lineWidth, fontSize }) {
       background = '#' + background;
       color = '#' + color;
 
       const canvas = document.getElementById('preview');
+      canvas.style.marginLeft = '1em'
       canvas.width = size;
       canvas.height = size;
 
       const context = canvas.getContext('2d');
-      const fontSize = Math.round(size / name.length);
       context.font = 'bold ' + fontSize + 'px Courier New';
       context.textAlign = 'center';
       context.textBaseline = 'middle';
@@ -173,7 +181,7 @@
       context.closePath();
 
       context.fillStyle = color;
-      context.fillText(name, x, y + size * 0.08);
+      context.fillText(name, x, y + 5);
     }
 
     function paintSymbol({ name, background, color, size, lineWidth }) {
@@ -200,21 +208,16 @@
       context.stroke();
     }
 
-
     const cache = {
-      save: function ({ name, background, color, size, lineWidth }) {
-        localStorage.setItem('name', name);
-        localStorage.setItem('background', background);
-        localStorage.setItem('color', color);
-        localStorage.setItem('size', '' + size);
-        localStorage.setItem('lineWidth', '' + lineWidth);
+      save: function (data) {
+        localStorage.setItem('data', JSON.stringify(data));
       },
       load: function () {
-        document.getElementById('name').value = localStorage.getItem('name') || '';
-        document.getElementById('background').value = localStorage.getItem('background') || '';
-        document.getElementById('color').value = localStorage.getItem('color') || '';
-        document.getElementById('size').value = localStorage.getItem('size') || '';
-        document.getElementById('line-width').value = localStorage.getItem('lineWidth') || '';
+        const json = localStorage.getItem('data');
+        const data = json ? JSON.parse(json) : {};
+        for (const [k, v] of Object.entries(data)) {
+          document.getElementById(k).value = v;
+        }
       }
     };
 
