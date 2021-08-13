@@ -167,11 +167,11 @@
       context.lineWidth = lineWidth;
 
       context.fillStyle = background;
-      context.fillRect(0, 0, canvas.width, canvas.height);
+      context.fillRect(0, 0, size, size);
 
       const realSize = size - lineWidth;
-      const x = realSize / 2 + lineWidth / 2;
-      const y = realSize / 2 + lineWidth / 2;
+      const x = size / 2;
+      const y = size / 2;
       const radius = realSize / 2;
 
       context.beginPath();
@@ -181,7 +181,9 @@
       context.closePath();
 
       context.fillStyle = color;
-      context.fillText(name, x, y + 5);
+      // const textMetrics = context.measureText(name);
+      // const textHeight = textMetrics.actualBoundingBoxAscent + textMetrics.actualBoundingBoxDescent;
+      context.fillText(name, x, (size + lineWidth) / 2);
     }
 
     function paintSymbol({ name, background, color, size, lineWidth }) {
